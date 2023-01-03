@@ -55,6 +55,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             session.save(new User(name, lastName, age));
             transaction.commit();
+            System.out.printf("User с именем - %s добавлен в базу данных%n", name);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -71,19 +72,6 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             User user = session.get(User.class, id);
             session.remove(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
-
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createSQLQuery("UPDATE users SET id = id - 1 WHERE id > ?")
-                    .setParameter(1, id)
-                    .executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
